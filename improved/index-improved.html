@@ -1,6 +1,23 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
+  <!--
+    PowerPoint Generator Pro - v2.1
+    
+    Corrections v2.1:
+    1. ✅ Système d'avertissements pour contenu long (titres >50 car, bullets >12 mots, tables >5 cols/8 rows)
+    2. ✅ Dimensions adaptatives pour tables (largeur et hauteur calculées selon contenu)
+    3. ✅ Ajustement automatique de la taille de police selon longueur du texte
+    4. ✅ Limitation automatique à 4 bullets maximum par slide (évite débordement)
+    5. ✅ Wrapping activé pour cellules de tableau
+    6. ✅ Hauteur et largeur de colonnes/rangées calculées dynamiquement
+    
+    Ces corrections résolvent les problèmes:
+    - Contenu sortant du cadre des slides
+    - Tables avec trop de colonnes/rangées
+    - Texte trop long dans les cellules
+  -->
+  
   <!-- Content Security Policy pour sécurité maximale -->
   <meta http-equiv="Content-Security-Policy"
     content="default-src 'self' data: blob:; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; connect-src 'none';">
@@ -8,7 +25,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Générateur de présentations PowerPoint professionnel avec IA">
-  <title>PowerPoint Generator Pro - Improved Edition</title>
+  <title>PowerPoint Generator Pro - v2.1</title>
   
   <!-- Chargement LOCAL de PptxGenJS -->
   <script src="./pptxgen.bundle.js"></script>
@@ -438,6 +455,19 @@
       border-bottom: none;
     }
 
+    .validation-warning-item {
+      display: flex;
+      align-items: start;
+      gap: 8px;
+      padding: 8px;
+      border-bottom: none;
+      font-size: 13px;
+      color: #92400e;
+      background: #fef3c7;
+      border-radius: 4px;
+      margin-bottom: 4px;
+    }
+
     .validation-error-icon {
       color: var(--error);
       font-weight: bold;
@@ -807,7 +837,7 @@
       <div class="logo-icon" role="img" aria-label="PowerPoint Generator Pro Logo">PP</div>
       <h1>PowerPoint Generator Pro</h1>
     </div>
-    <div class="subtitle">Solution professionnelle améliorée de génération de présentations</div>
+    <div class="subtitle">Solution professionnelle améliorée de génération de présentations - v2.1 (Anti-débordement)
     <div class="security-badge">
       <span role="img" aria-label="Lock">🔒</span>
       <span>100% Offline & Sécurisé</span>
@@ -1132,7 +1162,7 @@ Exemple:
             { type: 'twoColumn', title: 'Forces & Opportunités', leftContent: ['Expertise reconnue', 'Équipe talentueuse', 'Innovation continue'], rightContent: ['Marché en croissance', 'Nouvelles technologies', 'Partenariats stratégiques'] },
             { type: 'chart', title: 'Croissance sur 3 ans', chartType: 'bar', data: [{ label: '2023', value: 45 }, { label: '2024', value: 62 }, { label: '2025', value: 78 }] },
             { type: 'table', title: 'Indicateurs Clés', tableData: [['KPI', 'Cible', 'Réalisé'], ['CA', '5M€', '5.2M€'], ['Clients', '150', '165'], ['Satisfaction', '85%', '92%']] },
-            { type: 'content', title: 'Feuille de Route', bullets: ['Q1: Expansion internationale', 'Q2: Nouveaux produits', 'Q3: Digitalisation complète', 'Q4: Bilan et projection'] },
+            { type: 'content', title: 'Feuille de Route', bullets: ['Q1: Expansion internationale', 'Q2: Nouveaux produits', 'Q3: Digitalisation', 'Q4: Bilan projection'] },
             { type: 'image', title: 'Notre Équipe', imagePath: 'IMAGE_PLACEHOLDER_team-photo' },
             { type: 'content', title: 'Conclusion', bullets: ['Merci pour votre attention', 'Questions & Discussion', 'Contact: contact@example.com'] }
           ]
@@ -1268,53 +1298,59 @@ Exemple:
 
       try {
         const data = JSON.parse(jsonText);
-        const errors = validateData(data);
+        const result = validateData(data);
 
-        if (errors.length === 0) {
+        if (result.errors.length === 0) {
           validationStatus.className = 'validation-status valid';
-          validationText.textContent = '✓ JSON valide';
+          if (result.warnings.length > 0) {
+            validationText.textContent = `✓ JSON valide (${result.warnings.length} avertissement(s))`;
+            displayValidationErrors(result.warnings);
+          } else {
+            validationText.textContent = '✓ JSON valide';
+          }
           generateBtn.disabled = false;
         } else {
           validationStatus.className = 'validation-status invalid';
-          validationText.textContent = `✗ ${errors.length} erreur(s) détectée(s)`;
+          validationText.textContent = `✗ ${result.errors.length} erreur(s) détectée(s)`;
           generateBtn.disabled = true;
-          displayValidationErrors(errors);
+          displayValidationErrors([...result.errors, ...result.warnings]);
         }
       } catch (e) {
         validationStatus.className = 'validation-status invalid';
         validationText.textContent = '✗ JSON invalide';
         generateBtn.disabled = true;
-        displayValidationErrors([{ message: 'Format JSON invalide: ' + e.message }]);
+        displayValidationErrors([{ message: 'Format JSON invalide: ' + e.message, type: 'error' }]);
       }
     }
 
     function validateData(data) {
       const errors = [];
+      const warnings = [];
 
       // Validate metadata
       if (!data.metadata) {
-        errors.push({ message: 'metadata manquant' });
+        errors.push({ message: 'metadata manquant', type: 'error' });
       } else {
         if (!data.metadata.title || typeof data.metadata.title !== 'string') {
-          errors.push({ message: 'metadata.title est requis et doit être une chaîne' });
+          errors.push({ message: 'metadata.title est requis et doit être une chaîne', type: 'error' });
         }
         if (data.metadata.title && data.metadata.title.length > 100) {
-          errors.push({ message: 'metadata.title ne doit pas dépasser 100 caractères' });
+          errors.push({ message: 'metadata.title ne doit pas dépasser 100 caractères', type: 'error' });
         }
         if (!data.metadata.fileName || typeof data.metadata.fileName !== 'string') {
-          errors.push({ message: 'metadata.fileName est requis et doit être une chaîne' });
+          errors.push({ message: 'metadata.fileName est requis et doit être une chaîne', type: 'error' });
         }
       }
 
       // Validate slides
       if (!data.slides || !Array.isArray(data.slides) || data.slides.length === 0) {
-        errors.push({ message: 'slides est requis et doit contenir au moins une slide' });
+        errors.push({ message: 'slides est requis et doit contenir au moins une slide', type: 'error' });
       } else {
         // Check slide count
         if (data.metadata?.expectedSlideCount) {
           const expected = Number(data.metadata.expectedSlideCount);
           if (!isNaN(expected) && data.slides.length !== expected) {
-            errors.push({ message: `Nombre de slides incorrect: ${data.slides.length} au lieu de ${expected} attendues` });
+            errors.push({ message: `Nombre de slides incorrect: ${data.slides.length} au lieu de ${expected} attendues`, type: 'error' });
           }
         }
 
@@ -1323,69 +1359,115 @@ Exemple:
           const slideNum = index + 1;
           
           if (!slide.type || !SLIDE_TYPES.includes(slide.type)) {
-            errors.push({ message: `Slide ${slideNum}: type invalide ou manquant. Types acceptés: ${SLIDE_TYPES.join(', ')}` });
+            errors.push({ message: `Slide ${slideNum}: type invalide ou manquant. Types acceptés: ${SLIDE_TYPES.join(', ')}`, type: 'error' });
           }
 
           if (!slide.title || typeof slide.title !== 'string') {
-            errors.push({ message: `Slide ${slideNum}: title manquant ou invalide` });
+            errors.push({ message: `Slide ${slideNum}: title manquant ou invalide`, type: 'error' });
           }
 
           if (slide.title && slide.title.length > 60) {
-            errors.push({ message: `Slide ${slideNum}: title trop long (max 60 caractères)` });
+            errors.push({ message: `Slide ${slideNum}: title trop long (max 60 caractères)`, type: 'error' });
+          }
+
+          // Warning for long titles
+          if (slide.title && slide.title.length > 50) {
+            warnings.push({ message: `⚠ Slide ${slideNum}: titre long (${slide.title.length} car.) - risque de débordement`, type: 'warning' });
           }
 
           // Type-specific validation
           switch (slide.type) {
             case 'content':
               if (!slide.bullets || !Array.isArray(slide.bullets) || slide.bullets.length === 0) {
-                errors.push({ message: `Slide ${slideNum}: bullets manquants ou vides` });
+                errors.push({ message: `Slide ${slideNum}: bullets manquants ou vides`, type: 'error' });
+              } else {
+                // Warning for too many bullets
+                if (slide.bullets.length > 4) {
+                  warnings.push({ message: `⚠ Slide ${slideNum}: ${slide.bullets.length} puces (max recommandé: 4) - seules les 4 premières seront affichées`, type: 'warning' });
+                }
+                // Warning for long bullets
+                slide.bullets.forEach((bullet, bIdx) => {
+                  const wordCount = String(bullet).split(/\s+/).length;
+                  if (wordCount > 12) {
+                    warnings.push({ message: `⚠ Slide ${slideNum}, puce ${bIdx + 1}: ${wordCount} mots (max recommandé: 12) - risque de débordement`, type: 'warning' });
+                  }
+                });
               }
               break;
             
             case 'twoColumn':
               if (!slide.leftContent || !Array.isArray(slide.leftContent)) {
-                errors.push({ message: `Slide ${slideNum}: leftContent manquant ou invalide` });
+                errors.push({ message: `Slide ${slideNum}: leftContent manquant ou invalide`, type: 'error' });
+              } else if (slide.leftContent.length > 4) {
+                warnings.push({ message: `⚠ Slide ${slideNum}: colonne gauche avec ${slide.leftContent.length} éléments (max recommandé: 4)`, type: 'warning' });
               }
               if (!slide.rightContent || !Array.isArray(slide.rightContent)) {
-                errors.push({ message: `Slide ${slideNum}: rightContent manquant ou invalide` });
+                errors.push({ message: `Slide ${slideNum}: rightContent manquant ou invalide`, type: 'error' });
+              } else if (slide.rightContent.length > 4) {
+                warnings.push({ message: `⚠ Slide ${slideNum}: colonne droite avec ${slide.rightContent.length} éléments (max recommandé: 4)`, type: 'warning' });
               }
               break;
             
             case 'table':
               if (!slide.tableData || !Array.isArray(slide.tableData) || slide.tableData.length < 2) {
-                errors.push({ message: `Slide ${slideNum}: tableData doit contenir au moins 2 lignes` });
+                errors.push({ message: `Slide ${slideNum}: tableData doit contenir au moins 2 lignes`, type: 'error' });
+              } else {
+                const numCols = slide.tableData[0]?.length || 0;
+                const numRows = slide.tableData.length;
+                
+                // Warning for large tables
+                if (numCols > 5) {
+                  warnings.push({ message: `⚠ Slide ${slideNum}: tableau avec ${numCols} colonnes (max recommandé: 5) - risque de débordement`, type: 'warning' });
+                }
+                if (numRows > 8) {
+                  warnings.push({ message: `⚠ Slide ${slideNum}: tableau avec ${numRows} lignes (max recommandé: 8) - risque de débordement`, type: 'warning' });
+                }
+                
+                // Warning for long cell content
+                slide.tableData.forEach((row, rIdx) => {
+                  row.forEach((cell, cIdx) => {
+                    const cellText = String(cell || '');
+                    if (cellText.length > 30) {
+                      warnings.push({ message: `⚠ Slide ${slideNum}: cellule [${rIdx},${cIdx}] longue (${cellText.length} car.) - risque de débordement`, type: 'warning' });
+                    }
+                  });
+                });
               }
               break;
             
             case 'chart':
               if (!slide.chartType || !CHART_TYPES.includes(slide.chartType)) {
-                errors.push({ message: `Slide ${slideNum}: chartType invalide. Types acceptés: ${CHART_TYPES.join(', ')}` });
+                errors.push({ message: `Slide ${slideNum}: chartType invalide. Types acceptés: ${CHART_TYPES.join(', ')}`, type: 'error' });
               }
               if (!slide.data || !Array.isArray(slide.data) || slide.data.length === 0) {
-                errors.push({ message: `Slide ${slideNum}: data manquant pour le graphique` });
+                errors.push({ message: `Slide ${slideNum}: data manquant pour le graphique`, type: 'error' });
               }
               break;
           }
         });
       }
 
-      return errors;
+      return { errors, warnings };
     }
 
-    function displayValidationErrors(errors) {
+    function displayValidationErrors(messages) {
       const validationErrors = document.getElementById('validationErrors');
       
-      if (errors.length === 0) {
+      if (messages.length === 0) {
         validationErrors.classList.remove('show');
         return;
       }
 
-      validationErrors.innerHTML = errors.map(error => `
-        <div class="validation-error-item">
-          <span class="validation-error-icon">⚠</span>
-          <span>${sanitizeHTML(error.message)}</span>
-        </div>
-      `).join('');
+      validationErrors.innerHTML = messages.map(msg => {
+        const icon = msg.type === 'warning' ? '⚠' : '❌';
+        const cssClass = msg.type === 'warning' ? 'validation-warning-item' : 'validation-error-item';
+        return `
+          <div class="${cssClass}">
+            <span class="validation-error-icon">${icon}</span>
+            <span>${sanitizeHTML(msg.message)}</span>
+          </div>
+        `;
+      }).join('');
       
       validationErrors.classList.add('show');
     }
@@ -1738,9 +1820,9 @@ Exemple:
         }
         
         // Validation complète
-        const errors = validateData(data);
-        if (errors.length > 0) {
-          throw new Error(`Validation échouée: ${errors[0].message}`);
+        const result = validateData(data);
+        if (result.errors.length > 0) {
+          throw new Error(`Validation échouée: ${result.errors[0].message}`);
         }
 
         // Disable button during generation
@@ -1802,14 +1884,22 @@ Exemple:
                 line: { color: 'E2E8F0', width: 1 }
               });
               if (slide.bullets && slide.bullets.length > 0) {
-                const bullets = slide.bullets.map(b => ({
+                // Limit to 4 bullets maximum to prevent overflow
+                const limitedBullets = slide.bullets.slice(0, 4);
+                
+                // Calculate average bullet length for adaptive font sizing
+                const avgLength = limitedBullets.reduce((sum, b) => sum + String(b).length, 0) / limitedBullets.length;
+                const fontSize = avgLength > 100 ? 14 : avgLength > 80 ? 16 : 18;
+                
+                const bullets = limitedBullets.map(b => ({
                   text: String(b),
                   options: { 
                     bullet: { type: 'bullet', color: '3182CE' },
-                    fontSize: 18,
+                    fontSize: fontSize,
                     color: '334155',
                     paraSpaceBefore: 6,
-                    paraSpaceAfter: 6
+                    paraSpaceAfter: 6,
+                    breakLine: true
                   }
                 }));
                 pptSlide.addText(bullets, {
@@ -1831,14 +1921,22 @@ Exemple:
                 line: { color: 'E2E8F0', width: 1 }
               });
               if (slide.leftContent && slide.leftContent.length > 0) {
-                const leftBullets = slide.leftContent.map(b => ({
+                // Limit to 4 bullets maximum to prevent overflow
+                const limitedLeftContent = slide.leftContent.slice(0, 4);
+                
+                // Calculate average length for adaptive font sizing
+                const avgLengthLeft = limitedLeftContent.reduce((sum, b) => sum + String(b).length, 0) / limitedLeftContent.length;
+                const fontSizeLeft = avgLengthLeft > 70 ? 13 : avgLengthLeft > 50 ? 14 : 16;
+                
+                const leftBullets = limitedLeftContent.map(b => ({
                   text: String(b),
                   options: { 
                     bullet: { type: 'bullet', color: '3182CE' },
-                    fontSize: 16,
+                    fontSize: fontSizeLeft,
                     color: '334155',
                     paraSpaceBefore: 4,
-                    paraSpaceAfter: 4
+                    paraSpaceAfter: 4,
+                    breakLine: true
                   }
                 }));
                 pptSlide.addText(leftBullets, {
@@ -1847,14 +1945,22 @@ Exemple:
                 });
               }
               if (slide.rightContent && slide.rightContent.length > 0) {
-                const rightBullets = slide.rightContent.map(b => ({
+                // Limit to 4 bullets maximum to prevent overflow
+                const limitedRightContent = slide.rightContent.slice(0, 4);
+                
+                // Calculate average length for adaptive font sizing
+                const avgLengthRight = limitedRightContent.reduce((sum, b) => sum + String(b).length, 0) / limitedRightContent.length;
+                const fontSizeRight = avgLengthRight > 70 ? 13 : avgLengthRight > 50 ? 14 : 16;
+                
+                const rightBullets = limitedRightContent.map(b => ({
                   text: String(b),
                   options: { 
                     bullet: { type: 'bullet', color: '3182CE' },
-                    fontSize: 16,
+                    fontSize: fontSizeRight,
                     color: '334155',
                     paraSpaceBefore: 4,
-                    paraSpaceAfter: 4
+                    paraSpaceAfter: 4,
+                    breakLine: true
                   }
                 }));
                 pptSlide.addText(rightBullets, {
@@ -1871,29 +1977,70 @@ Exemple:
                 fontFace: 'Arial'
               });
               if (slide.tableData && slide.tableData.length > 0) {
+                // Adaptive dimensions based on content
+                const numCols = slide.tableData[0]?.length || 1;
+                const numRows = slide.tableData.length;
+                
+                // Calculate adaptive table width (max 9 inches, min 3 inches)
+                const tableWidth = Math.min(9, Math.max(3, numCols * 1.8));
+                const colWidth = tableWidth / numCols;
+                const tableX = (10 - tableWidth) / 2; // Center horizontally
+                
+                // Calculate adaptive table height (max 4.8 inches)
+                const rowHeight = Math.min(0.6, 4.8 / numRows);
+                const tableHeight = Math.min(4.8, numRows * rowHeight);
+                
+                // Function to adjust font size based on text length
+                const adjustFontSize = (text, isHeader) => {
+                  const textLength = String(text || '').length;
+                  if (isHeader) {
+                    if (textLength > 20) return 11;
+                    if (textLength > 15) return 12;
+                    return 13;
+                  } else {
+                    if (textLength > 40) return 9;
+                    if (textLength > 30) return 10;
+                    if (textLength > 20) return 11;
+                    return 12;
+                  }
+                };
+                
                 const tableData = slide.tableData.map((row, idx) => 
-                  row.map(cell => ({
-                    text: String(cell || ''),
-                    options: idx === 0 ? {
-                      bold: true,
-                      color: 'FFFFFF',
-                      fill: { color: '2C5282' },
-                      fontSize: 14,
-                      align: 'center',
-                      valign: 'middle'
-                    } : {
-                      fontSize: 13,
-                      color: '334155',
-                      align: 'center',
-                      valign: 'middle',
-                      fill: idx % 2 === 0 ? { color: 'F8FAFC' } : { color: 'FFFFFF' }
-                    }
-                  }))
+                  row.map(cell => {
+                    const cellText = String(cell || '');
+                    const fontSize = adjustFontSize(cellText, idx === 0);
+                    
+                    return {
+                      text: cellText,
+                      options: idx === 0 ? {
+                        bold: true,
+                        color: 'FFFFFF',
+                        fill: { color: '2C5282' },
+                        fontSize: fontSize,
+                        align: 'center',
+                        valign: 'middle',
+                        wrap: true
+                      } : {
+                        fontSize: fontSize,
+                        color: '334155',
+                        align: 'center',
+                        valign: 'middle',
+                        fill: idx % 2 === 0 ? { color: 'F8FAFC' } : { color: 'FFFFFF' },
+                        wrap: true
+                      }
+                    };
+                  })
                 );
+                
                 pptSlide.addTable(tableData, {
-                  x: 0.5, y: 1.5, w: 9, h: 4.8,
+                  x: tableX, 
+                  y: 1.5, 
+                  w: tableWidth, 
+                  h: tableHeight,
                   border: { pt: 0.5, color: 'E2E8F0' },
-                  fontFace: 'Arial'
+                  fontFace: 'Arial',
+                  colW: Array(numCols).fill(colWidth),
+                  rowH: Array(numRows).fill(rowHeight)
                 });
               }
               break;
