@@ -1,0 +1,2140 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <!--
+    PowerPoint Generator Pro - v2.1
+    
+    Corrections v2.1:
+    1. ✅ Système d'avertissements pour contenu long (titres >50 car, bullets >12 mots, tables >5 cols/8 rows)
+    2. ✅ Dimensions adaptatives pour tables (largeur et hauteur calculées selon contenu)
+    3. ✅ Ajustement automatique de la taille de police selon longueur du texte
+    4. ✅ Limitation automatique à 4 bullets maximum par slide (évite débordement)
+    5. ✅ Wrapping activé pour cellules de tableau
+    6. ✅ Hauteur et largeur de colonnes/rangées calculées dynamiquement
+    
+    Ces corrections résolvent les problèmes:
+    - Contenu sortant du cadre des slides
+    - Tables avec trop de colonnes/rangées
+    - Texte trop long dans les cellules
+  -->
+  
+  <!-- Content Security Policy pour sécurité maximale -->
+  <meta http-equiv="Content-Security-Policy"
+    content="default-src 'self' data: blob:; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; connect-src 'none';">
+  
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Générateur de présentations PowerPoint professionnel avec IA">
+  <title>PowerPoint Generator Pro - v2.1</title>
+  
+  <!-- Chargement LOCAL de PptxGenJS -->
+  <script src="./pptxgen.bundle.js"></script>
+  
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      /* Couleurs principales */
+      --primary-blue: #3182ce;
+      --primary-dark: #2c5282;
+      --primary-light: #60a5fa;
+      --secondary: #2563eb;
+      
+      /* Neutrals */
+      --bg-light: #f5f7fa;
+      --bg-dark: #1a202c;
+      --text-dark: #1a202c;
+      --text-light: #64748b;
+      --text-white: #ffffff;
+      
+      /* Semantic colors */
+      --success: #10b981;
+      --error: #ef4444;
+      --warning: #f59e0b;
+      --info: #3b82f6;
+      
+      /* Borders */
+      --border-light: #e2e8f0;
+      --border-dark: #cbd5e1;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+      background: linear-gradient(135deg, var(--bg-light) 0%, #e9ecef 100%);
+      color: var(--text-dark);
+      min-height: 100vh;
+      padding: 40px 20px 20px;
+    }
+
+    /* Header professionnel */
+    .header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .logo {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+
+    .logo-icon {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-blue) 100%);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      color: var(--text-white);
+      font-weight: bold;
+      box-shadow: 0 4px 6px rgba(44, 82, 130, 0.15);
+    }
+
+    h1 {
+      font-size: 32px;
+      font-weight: 600;
+      color: var(--text-dark);
+      letter-spacing: -0.5px;
+      display: inline-block;
+      vertical-align: middle;
+    }
+
+    .subtitle {
+      color: var(--text-light);
+      font-size: 14px;
+      margin-top: 8px;
+      font-weight: 400;
+    }
+
+    /* Badge de sécurité */
+    .security-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 15px;
+      padding: 6px 12px;
+      background: #dcfce7;
+      border: 1px solid #86efac;
+      border-radius: 20px;
+      font-size: 12px;
+      color: #166534;
+      font-weight: 500;
+    }
+
+    /* Container principal */
+    .container {
+      width: 100%;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    /* Barre d'action en haut */
+    .action-bar {
+      background: var(--text-white);
+      border-radius: 12px;
+      padding: 20px 30px;
+      margin-bottom: 30px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      border: 1px solid var(--border-light);
+    }
+
+    .action-info {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      flex: 1;
+      flex-wrap: wrap;
+    }
+
+    .status-indicator {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      background: #f0f9ff;
+      border-radius: 8px;
+      border: 1px solid #bfdbfe;
+      font-size: 13px;
+      color: #1e40af;
+      font-weight: 500;
+    }
+
+    .validation-status {
+      display: none;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    .validation-status.valid {
+      display: flex;
+      background: #dcfce7;
+      border: 1px solid #86efac;
+      color: #166534;
+    }
+
+    .validation-status.invalid {
+      display: flex;
+      background: #fee2e2;
+      border: 1px solid #fca5a5;
+      color: #991b1b;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--success);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    .status-dot.error {
+      background: var(--error);
+      animation: none;
+    }
+
+    /* Actions buttons group */
+    .action-buttons {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    /* Bouton principal */
+    .btn-generate-main {
+      background: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary) 100%);
+      color: var(--text-white);
+      border: none;
+      padding: 12px 32px;
+      border-radius: 8px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-generate-main:before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transition: left 0.6s;
+    }
+
+    .btn-generate-main:hover:before {
+      left: 100%;
+    }
+
+    .btn-generate-main:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(37, 99, 235, 0.35);
+    }
+
+    .btn-generate-main:active {
+      transform: translateY(0);
+    }
+
+    .btn-generate-main:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none !important;
+    }
+
+    .btn-icon {
+      width: 20px;
+      height: 20px;
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      color: var(--primary-blue);
+    }
+
+    /* Layout principal */
+    .layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 30px;
+    }
+
+    @media (max-width: 1024px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+      
+      .action-bar {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      
+      .btn-generate-main {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+
+    /* Panels */
+    .panel {
+      background: var(--text-white);
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      border: 1px solid var(--border-light);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      height: 600px;
+    }
+
+    .panel-header {
+      background: linear-gradient(to right, #f8fafc, #f1f5f9);
+      padding: 20px 25px;
+      border-bottom: 1px solid var(--border-light);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .panel-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: #475569;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .panel-badge {
+      background: var(--primary-blue);
+      color: var(--text-white);
+      width: 24px;
+      height: 24px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+    .panel-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .panel-content {
+      flex: 1;
+      padding: 25px;
+      overflow-y: auto;
+    }
+
+    /* Prompt styling */
+    .prompt-content {
+      font-family: 'SF Mono', 'Monaco', 'Consolas', monospace;
+      font-size: 13px;
+      line-height: 1.7;
+      color: #334155;
+      white-space: pre-wrap;
+      background: #f8fafc;
+      border-radius: 8px;
+      padding: 20px;
+      border: 1px solid var(--border-light);
+      height: 100%;
+      overflow-y: auto;
+    }
+
+    .prompt-content::-webkit-scrollbar,
+    textarea::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .prompt-content::-webkit-scrollbar-track,
+    textarea::-webkit-scrollbar-track {
+      background: #f1f5f9;
+      border-radius: 10px;
+    }
+
+    .prompt-content::-webkit-scrollbar-thumb,
+    textarea::-webkit-scrollbar-thumb {
+      background: var(--border-dark);
+      border-radius: 10px;
+    }
+
+    .prompt-content::-webkit-scrollbar-thumb:hover,
+    textarea::-webkit-scrollbar-thumb:hover {
+      background: #94a3b8;
+    }
+
+    /* Textarea */
+    textarea {
+      width: 100%;
+      height: 100%;
+      background: #f8fafc;
+      border: 1px solid var(--border-light);
+      border-radius: 8px;
+      padding: 20px;
+      color: #1e293b;
+      font-family: 'SF Mono', 'Monaco', 'Consolas', monospace;
+      font-size: 13px;
+      line-height: 1.7;
+      resize: none;
+      outline: none;
+      transition: all 0.3s ease;
+    }
+
+    textarea:focus {
+      border-color: var(--primary-blue);
+      background: var(--text-white);
+      box-shadow: 0 0 0 3px rgba(49, 130, 206, 0.1);
+    }
+
+    textarea::placeholder {
+      color: #94a3b8;
+    }
+
+    /* Validation errors */
+    .validation-errors {
+      display: none;
+      background: #fef2f2;
+      border: 1px solid #fca5a5;
+      border-radius: 8px;
+      padding: 12px;
+      margin-top: 15px;
+      max-height: 200px;
+      overflow-y: auto;
+    }
+
+    .validation-errors.show {
+      display: block;
+    }
+
+    .validation-error-item {
+      display: flex;
+      align-items: start;
+      gap: 8px;
+      padding: 6px 0;
+      border-bottom: 1px solid #fee2e2;
+      font-size: 13px;
+      color: #991b1b;
+    }
+
+    .validation-error-item:last-child {
+      border-bottom: none;
+    }
+
+    .validation-warning-item {
+      display: flex;
+      align-items: start;
+      gap: 8px;
+      padding: 8px;
+      border-bottom: none;
+      font-size: 13px;
+      color: #92400e;
+      background: #fef3c7;
+      border-radius: 4px;
+      margin-bottom: 4px;
+    }
+
+    .validation-error-icon {
+      color: var(--error);
+      font-weight: bold;
+    }
+
+    /* Buttons */
+    .btn {
+      background: var(--text-white);
+      color: #475569;
+      border: 1px solid var(--border-dark);
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn:hover {
+      background: #f8fafc;
+      border-color: #94a3b8;
+      transform: translateY(-1px);
+    }
+
+    .btn-primary {
+      background: var(--primary-blue);
+      color: var(--text-white);
+      border-color: var(--primary-blue);
+    }
+
+    .btn-primary:hover {
+      background: var(--secondary);
+      border-color: var(--secondary);
+    }
+
+    .btn-secondary {
+      background: #6366f1;
+      color: var(--text-white);
+      border-color: #6366f1;
+    }
+
+    .btn-secondary:hover {
+      background: #4f46e5;
+      border-color: #4f46e5;
+    }
+
+    .btn-success {
+      background: var(--success);
+      color: var(--text-white);
+      border-color: var(--success);
+    }
+
+    .btn-success:hover {
+      background: #059669;
+      border-color: #059669;
+    }
+
+    /* Toast notifications */
+    .toast {
+      position: fixed;
+      top: 30px;
+      right: 30px;
+      padding: 16px 24px;
+      background: var(--text-white);
+      border-radius: 8px;
+      font-size: 14px;
+      display: none;
+      animation: slideIn 0.3s ease;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      border-left: 4px solid var(--primary-blue);
+      font-weight: 500;
+      z-index: 1000;
+      max-width: 400px;
+    }
+
+    @keyframes slideIn {
+      from { 
+        opacity: 0; 
+        transform: translateX(100px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    @keyframes slideOut {
+      from { 
+        opacity: 1; 
+        transform: translateX(0);
+      }
+      to {
+        opacity: 0;
+        transform: translateX(100px);
+      }
+    }
+
+    .toast.success {
+      border-left-color: var(--success);
+      color: #059669;
+    }
+
+    .toast.error {
+      border-left-color: var(--error);
+      color: #dc2626;
+    }
+
+    .toast.warning {
+      border-left-color: var(--warning);
+      color: #d97706;
+    }
+
+    .toast.info {
+      border-left-color: var(--info);
+      color: #1d4ed8;
+    }
+
+    /* Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 2000;
+      align-items: center;
+      justify-content: center;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .modal.show {
+      display: flex;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .modal-content {
+      background: var(--text-white);
+      border-radius: 12px;
+      padding: 30px;
+      max-width: 600px;
+      width: 90%;
+      max-height: 80vh;
+      overflow-y: auto;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+      animation: scaleIn 0.3s ease;
+    }
+
+    @keyframes scaleIn {
+      from {
+        opacity: 0;
+        transform: scale(0.9);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .modal-title {
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--text-dark);
+    }
+
+    .modal-close {
+      background: none;
+      border: none;
+      font-size: 24px;
+      color: #64748b;
+      cursor: pointer;
+      padding: 0;
+      width: 30px;
+      height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 6px;
+      transition: all 0.2s ease;
+    }
+
+    .modal-close:hover {
+      background: #f1f5f9;
+      color: var(--text-dark);
+    }
+
+    .modal-body {
+      margin-bottom: 20px;
+    }
+
+    .template-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 15px;
+      margin-top: 20px;
+    }
+
+    .template-card {
+      border: 2px solid var(--border-light);
+      border-radius: 8px;
+      padding: 15px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .template-card:hover {
+      border-color: var(--primary-blue);
+      background: #f8fafc;
+      transform: translateY(-2px);
+    }
+
+    .template-card h3 {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text-dark);
+      margin-bottom: 5px;
+    }
+
+    .template-card p {
+      font-size: 13px;
+      color: var(--text-light);
+    }
+
+    /* History */
+    .history-list {
+      max-height: 400px;
+      overflow-y: auto;
+    }
+
+    .history-item {
+      border: 1px solid var(--border-light);
+      border-radius: 8px;
+      padding: 12px;
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: all 0.2s ease;
+    }
+
+    .history-item:hover {
+      background: #f8fafc;
+      border-color: var(--primary-blue);
+    }
+
+    .history-info h4 {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-dark);
+      margin-bottom: 4px;
+    }
+
+    .history-info p {
+      font-size: 12px;
+      color: var(--text-light);
+    }
+
+    .history-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    /* Instructions footer */
+    .instructions {
+      background: var(--text-white);
+      border-radius: 12px;
+      padding: 20px 30px;
+      margin-top: 30px;
+      border: 1px solid var(--border-light);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    }
+
+    .instructions-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: #475569;
+      margin-bottom: 15px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .instructions-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+    }
+
+    .instruction-item {
+      display: flex;
+      gap: 12px;
+    }
+
+    .instruction-number {
+      background: #f0f9ff;
+      color: var(--primary-blue);
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: 14px;
+      flex-shrink: 0;
+    }
+
+    .instruction-text {
+      color: var(--text-light);
+      font-size: 14px;
+      line-height: 1.5;
+      padding-top: 4px;
+    }
+
+    /* Loading spinner */
+    .spinner {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border: 3px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      border-top-color: var(--text-white);
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Accessibility improvements */
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0,0,0,0);
+      white-space: nowrap;
+      border-width: 0;
+    }
+
+    /* Focus visible for keyboard navigation */
+    *:focus-visible {
+      outline: 2px solid var(--primary-blue);
+      outline-offset: 2px;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="logo">
+      <div class="logo-icon" role="img" aria-label="PowerPoint Generator Pro Logo">PP</div>
+      <h1>PowerPoint Generator Pro</h1>
+    </div>
+    <div class="subtitle">Solution professionnelle améliorée de génération de présentations - v2.1 (Anti-débordement)</div>
+    <div class="security-badge">
+      <span role="img" aria-label="Lock">🔒</span>
+      <span>100% Offline & Sécurisé</span>
+    </div>
+  </div>
+
+  <div class="container">
+    <!-- Barre d'action principale -->
+    <div class="action-bar">
+      <div class="action-info">
+        <div class="status-indicator" role="status" aria-live="polite">
+          <span class="status-dot" id="statusDot" aria-hidden="true"></span>
+          <span id="statusText">Vérification...</span>
+        </div>
+        <div class="validation-status" id="validationStatus" role="status" aria-live="polite">
+          <span id="validationText"></span>
+        </div>
+      </div>
+      <div class="action-buttons">
+        <button 
+          class="btn btn-secondary" 
+          onclick="openTemplatesModal()"
+          aria-label="Charger un template pré-défini">
+          📄 Templates
+        </button>
+        <button 
+          class="btn btn-secondary" 
+          onclick="openHistoryModal()"
+          aria-label="Voir l'historique des générations">
+          📜 Historique
+        </button>
+        <button 
+          class="btn-generate-main" 
+          id="generateBtn"
+          onclick="generate()"
+          aria-label="Générer la présentation PowerPoint"
+          disabled>
+          <span class="btn-icon" aria-hidden="true">▶</span>
+          <span>Générer PowerPoint</span>
+        </button>
+      </div>
+    </div>
+    
+    <div class="layout">
+      <!-- Panel Prompt -->
+      <div class="panel">
+        <div class="panel-header">
+          <span class="panel-title">
+            <span class="panel-badge" aria-hidden="true">1</span>
+            Prompt Template IA
+          </span>
+          <button 
+            class="btn btn-primary" 
+            onclick="copyPrompt()"
+            aria-label="Copier le prompt template dans le presse-papiers">
+            📋 Copier le prompt
+          </button>
+        </div>
+        <div class="panel-content">
+          <div 
+            class="prompt-content" 
+            id="prompt"
+            role="region"
+            aria-label="Prompt template pour l'IA">Tu es un générateur de contenu pour présentations PowerPoint professionnelles.
+Tu dois produire UNIQUEMENT un objet JSON valide, sans texte avant/après, sans balises markdown, sans commentaires.
+
+════════════════════════════════════════════════════════════════════════════════
+CONTEXTE À DÉFINIR
+════════════════════════════════════════════════════════════════════════════════
+
+SUJET : [votre sujet]
+NOMBRE_SLIDES : [nombre ou AUTO]
+STYLE : [professionnel|créatif|académique|commercial]
+
+════════════════════════════════════════════════════════════════════════════════
+RÈGLES ABSOLUES
+════════════════════════════════════════════════════════════════════════════════
+
+✅ JSON STRICT :
+• UTF-8, guillemets doubles uniquement
+• Échapper guillemets internes avec \"
+• Pas de virgules finales, pas de commentaires
+• Nombres dans tableaux = chaînes ("45%", "2.5M€")
+• Nombres dans graphiques = nombres purs (45, 2.5)
+
+✅ CONTRAINTES :
+• Titres : max 60 caractères
+• Bullets : 3-5 par slide, max 15 mots
+• Tables : max 4 colonnes × 10 lignes
+• Première slide = type "title"
+• Dernière slide = type "content" avec call-to-action
+
+════════════════════════════════════════════════════════════════════════════════
+STRUCTURE JSON
+════════════════════════════════════════════════════════════════════════════════
+
+{
+  "metadata": {
+    "title": "Titre de la présentation",
+    "fileName": "nom-fichier.pptx",
+    "author": "Auteur",
+    "expectedSlideCount": 10
+  },
+  "slides": [
+    {
+      "type": "title",
+      "title": "Titre principal",
+      "subtitle": "Sous-titre"
+    },
+    {
+      "type": "content", 
+      "title": "Titre de slide",
+      "bullets": [
+        "Point 1 (max 15 mots)",
+        "Point 2",
+        "Point 3"
+      ]
+    },
+    {
+      "type": "twoColumn",
+      "title": "Titre",
+      "leftContent": ["Point 1", "Point 2"],
+      "rightContent": ["Point 1", "Point 2"]
+    },
+    {
+      "type": "table",
+      "title": "Titre",
+      "tableData": [
+        ["En-tête 1", "En-tête 2", "En-tête 3"],
+        ["Donnée", "45%", "2.5M€"]
+      ]
+    },
+    {
+      "type": "chart",
+      "title": "Titre",
+      "chartType": "bar",
+      "data": [
+        { "label": "Q1", "value": 45 },
+        { "label": "Q2", "value": 52 },
+        { "label": "Q3", "value": 48 }
+      ]
+    },
+    {
+      "type": "image",
+      "title": "Titre",
+      "imagePath": "IMAGE_PLACEHOLDER_description"
+    }
+  ]
+}
+
+════════════════════════════════════════════════════════════════════════════════
+TYPES DISPONIBLES
+════════════════════════════════════════════════════════════════════════════════
+
+• title : Slide d'ouverture
+• content : Contenu avec bullets  
+• twoColumn : Deux colonnes
+• table : Tableau de données
+• chart : Graphique (bar, line, pie)
+• image : Image ou placeholder
+
+════════════════════════════════════════════════════════════════════════════════
+
+GÉNÈRE UNIQUEMENT LE JSON, SANS TEXTE AVANT/APRÈS.</div>
+        </div>
+      </div>
+
+      <!-- Panel JSON -->
+      <div class="panel">
+        <div class="panel-header">
+          <span class="panel-title">
+            <span class="panel-badge" aria-hidden="true">2</span>
+            JSON de l'IA
+          </span>
+          <div class="panel-actions">
+            <button 
+              class="btn" 
+              onclick="clearJSON()"
+              aria-label="Effacer le contenu JSON">
+              🗑️ Effacer
+            </button>
+            <button 
+              class="btn btn-success" 
+              onclick="importJSON()"
+              aria-label="Importer un fichier JSON">
+              📂 Importer
+            </button>
+            <button 
+              class="btn btn-success" 
+              onclick="exportJSON()"
+              aria-label="Exporter le JSON vers un fichier">
+              💾 Exporter
+            </button>
+          </div>
+        </div>
+        <div class="panel-content">
+          <textarea 
+            id="jsonInput" 
+            placeholder="Collez ici le JSON généré par l'IA...
+
+Exemple:
+{
+  &quot;metadata&quot;: {
+    &quot;title&quot;: &quot;Ma Présentation&quot;,
+    &quot;fileName&quot;: &quot;presentation.pptx&quot;,
+    &quot;expectedSlideCount&quot;: 5
+  },
+  &quot;slides&quot;: [...]
+}"
+            spellcheck="false"
+            aria-label="Zone de saisie pour le JSON de l'IA"
+            aria-describedby="validationErrors"
+          ></textarea>
+          <div class="validation-errors" id="validationErrors" role="alert"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Instructions -->
+    <div class="instructions">
+      <div class="instructions-title">Mode d'emploi</div>
+      <div class="instructions-grid">
+        <div class="instruction-item">
+          <div class="instruction-number" aria-hidden="true">1</div>
+          <div class="instruction-text">
+            Copiez le prompt template et collez-le dans votre IA (ChatGPT, Claude, etc.)
+          </div>
+        </div>
+        <div class="instruction-item">
+          <div class="instruction-number" aria-hidden="true">2</div>
+          <div class="instruction-text">
+            Personnalisez le contexte (sujet, nombre de slides, style) dans le prompt
+          </div>
+        </div>
+        <div class="instruction-item">
+          <div class="instruction-number" aria-hidden="true">3</div>
+          <div class="instruction-text">
+            Copiez le JSON généré par l'IA et collez-le dans le panel de droite
+          </div>
+        </div>
+        <div class="instruction-item">
+          <div class="instruction-number" aria-hidden="true">4</div>
+          <div class="instruction-text">
+            La validation en temps réel vous indiquera les erreurs éventuelles
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast notification -->
+  <div class="toast" id="toast" role="alert" aria-live="assertive"></div>
+
+  <!-- Templates Modal -->
+  <div class="modal" id="templatesModal" role="dialog" aria-labelledby="templatesModalTitle" aria-modal="true">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title" id="templatesModalTitle">Templates Pré-définis</h2>
+        <button class="modal-close" onclick="closeTemplatesModal()" aria-label="Fermer la fenêtre">×</button>
+      </div>
+      <div class="modal-body">
+        <p style="color: var(--text-light); margin-bottom: 15px;">
+          Choisissez un template pour démarrer rapidement
+        </p>
+        <div class="template-grid" id="templateGrid"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- History Modal -->
+  <div class="modal" id="historyModal" role="dialog" aria-labelledby="historyModalTitle" aria-modal="true">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title" id="historyModalTitle">Historique des Générations</h2>
+        <button class="modal-close" onclick="closeHistoryModal()" aria-label="Fermer la fenêtre">×</button>
+      </div>
+      <div class="modal-body">
+        <div class="history-list" id="historyList"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Hidden file input for import -->
+  <input type="file" id="fileInput" accept=".json" style="display: none;" onchange="handleFileImport(event)">
+
+  <script>
+    // ============================================================================
+    // CONFIGURATION & CONSTANTS
+    // ============================================================================
+    
+    const CONFIG = {
+      AUTO_SAVE_DELAY: 10000, // 10 secondes
+      MAX_HISTORY_ITEMS: 10,
+      STORAGE_KEYS: {
+        CURRENT_JSON: 'pptgen_current_json',
+        HISTORY: 'pptgen_history'
+      }
+    };
+
+    const SLIDE_TYPES = ['title', 'content', 'twoColumn', 'table', 'chart', 'image'];
+    const CHART_TYPES = ['bar', 'line', 'pie'];
+    const STYLES = ['professionnel', 'créatif', 'académique', 'commercial'];
+
+    // ============================================================================
+    // TEMPLATES PRÉ-DÉFINIS
+    // ============================================================================
+
+    const TEMPLATES = {
+      business: {
+        name: 'Présentation Business',
+        description: '8 slides · Style professionnel',
+        data: {
+          metadata: {
+            title: 'Présentation Business',
+            fileName: 'business-presentation.pptx',
+            author: 'PowerPoint Generator Pro',
+            expectedSlideCount: 8
+          },
+          slides: [
+            { type: 'title', title: 'Présentation Business', subtitle: 'Stratégie & Perspectives' },
+            { type: 'content', title: 'Vue d\'ensemble', bullets: ['Mission et vision', 'Objectifs stratégiques', 'Valeurs fondamentales'] },
+            { type: 'twoColumn', title: 'Forces & Opportunités', leftContent: ['Expertise reconnue', 'Équipe talentueuse', 'Innovation continue'], rightContent: ['Marché en croissance', 'Nouvelles technologies', 'Partenariats stratégiques'] },
+            { type: 'chart', title: 'Croissance sur 3 ans', chartType: 'bar', data: [{ label: '2023', value: 45 }, { label: '2024', value: 62 }, { label: '2025', value: 78 }] },
+            { type: 'table', title: 'Indicateurs Clés', tableData: [['KPI', 'Cible', 'Réalisé'], ['CA', '5M€', '5.2M€'], ['Clients', '150', '165'], ['Satisfaction', '85%', '92%']] },
+            { type: 'content', title: 'Feuille de Route', bullets: ['Q1: Expansion internationale', 'Q2: Nouveaux produits', 'Q3: Digitalisation', 'Q4: Bilan projection'] },
+            { type: 'image', title: 'Notre Équipe', imagePath: 'IMAGE_PLACEHOLDER_team-photo' },
+            { type: 'content', title: 'Conclusion', bullets: ['Merci pour votre attention', 'Questions & Discussion', 'Contact: contact@example.com'] }
+          ]
+        }
+      },
+      marketing: {
+        name: 'Pitch Marketing',
+        description: '6 slides · Style créatif',
+        data: {
+          metadata: {
+            title: 'Campagne Marketing Digitale',
+            fileName: 'marketing-pitch.pptx',
+            author: 'Marketing Team',
+            expectedSlideCount: 6
+          },
+          slides: [
+            { type: 'title', title: 'Campagne Marketing 2025', subtitle: 'Stratégie Digitale Innovante' },
+            { type: 'content', title: 'Objectifs de la Campagne', bullets: ['Augmenter la visibilité de 50%', 'Générer 1000 leads qualifiés', 'ROI de 300% en 6 mois'] },
+            { type: 'chart', title: 'Budget Allocation', chartType: 'pie', data: [{ label: 'Social Media', value: 40 }, { label: 'SEO/SEM', value: 30 }, { label: 'Content', value: 20 }, { label: 'Influence', value: 10 }] },
+            { type: 'twoColumn', title: 'Canaux & Tactiques', leftContent: ['LinkedIn: B2B targeting', 'Instagram: Visual content', 'YouTube: Tutorials'], rightContent: ['Automation emails', 'Webinars mensuels', 'Podcasts sectoriels'] },
+            { type: 'table', title: 'Timeline', tableData: [['Mois', 'Action', 'KPI'], ['Janvier', 'Lancement', '500 vues'], ['Février', 'Optimisation', '200 leads'], ['Mars', 'Scale-up', '500 leads']] },
+            { type: 'content', title: 'Next Steps', bullets: ['Validation du budget cette semaine', 'Kick-off meeting le 15 janvier', 'Premier reporting fin février'] }
+          ]
+        }
+      },
+      quarterly: {
+        name: 'Rapport Trimestriel',
+        description: '10 slides · Style analytique',
+        data: {
+          metadata: {
+            title: 'Rapport Q4 2024',
+            fileName: 'quarterly-report-q4.pptx',
+            author: 'Finance Department',
+            expectedSlideCount: 10
+          },
+          slides: [
+            { type: 'title', title: 'Rapport Trimestriel Q4 2024', subtitle: 'Résultats & Perspectives' },
+            { type: 'content', title: 'Points Clés', bullets: ['Croissance de 15% vs Q3', 'Rentabilité en hausse', 'Expansion réussie'] },
+            { type: 'chart', title: 'Chiffre d\'Affaires', chartType: 'line', data: [{ label: 'Q1', value: 1.2 }, { label: 'Q2', value: 1.4 }, { label: 'Q3', value: 1.6 }, { label: 'Q4', value: 1.85 }] },
+            { type: 'table', title: 'Performance par Région', tableData: [['Région', 'CA M€', 'Var%'], ['Europe', '0.8', '+12%'], ['Amérique', '0.6', '+18%'], ['Asie', '0.45', '+20%']] },
+            { type: 'chart', title: 'Répartition Clients', chartType: 'pie', data: [{ label: 'PME', value: 45 }, { label: 'ETI', value: 35 }, { label: 'Grands Comptes', value: 20 }] },
+            { type: 'twoColumn', title: 'Succès & Défis', leftContent: ['Nouveau produit lancé', '25% de clients récurrents', 'NPS de 72'], rightContent: ['Délais de livraison', 'Turn-over 12%', 'Coûts logistiques'] },
+            { type: 'content', title: 'Initiatives Q1 2025', bullets: ['Automatisation production', 'Programme fidélité', 'Recrutement 15 postes', 'Partenariat stratégique'] },
+            { type: 'table', title: 'Prévisions 2025', tableData: [['Trimestre', 'CA Prévu', 'Marge'], ['Q1', '2.0M€', '28%'], ['Q2', '2.2M€', '30%'], ['Q3', '2.3M€', '31%'], ['Q4', '2.5M€', '32%']] },
+            { type: 'image', title: 'Nouveau Produit', imagePath: 'IMAGE_PLACEHOLDER_product-launch' },
+            { type: 'content', title: 'Conclusion', bullets: ['Année exceptionnelle', '2025 très prometteuse', 'Merci à toutes les équipes'] }
+          ]
+        }
+      }
+    };
+
+    // ============================================================================
+    // STATE MANAGEMENT
+    // ============================================================================
+
+    let autoSaveTimeout = null;
+    let validationTimeout = null;
+
+    // ============================================================================
+    // INITIALIZATION
+    // ============================================================================
+
+    window.addEventListener('DOMContentLoaded', () => {
+      initLibraryCheck();
+      loadSavedJSON();
+      setupEventListeners();
+      populateTemplates();
+    });
+
+    function initLibraryCheck() {
+      const dot = document.getElementById('statusDot');
+      const text = document.getElementById('statusText');
+      
+      if (typeof PptxGenJS !== 'undefined' || typeof window.PptxGenJS !== 'undefined' || typeof pptxgen !== 'undefined') {
+        if (typeof PptxGenJS === 'undefined' && typeof pptxgen !== 'undefined') {
+          window.PptxGenJS = pptxgen;
+        }
+        dot.className = 'status-dot';
+        text.textContent = 'Système prêt';
+      } else {
+        dot.className = 'status-dot error';
+        text.textContent = 'Bibliothèque manquante';
+        showToast('error', '⚠️ Placez pptxgen.bundle.js dans le même dossier');
+      }
+    }
+
+    function setupEventListeners() {
+      const jsonInput = document.getElementById('jsonInput');
+      
+      // Validation en temps réel
+      jsonInput.addEventListener('input', () => {
+        clearTimeout(validationTimeout);
+        validationTimeout = setTimeout(() => {
+          validateJSONRealtime();
+        }, 500);
+
+        // Auto-save
+        clearTimeout(autoSaveTimeout);
+        autoSaveTimeout = setTimeout(() => {
+          saveJSON();
+        }, CONFIG.AUTO_SAVE_DELAY);
+      });
+
+      // Accessibility: Close modal on Escape
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          closeTemplatesModal();
+          closeHistoryModal();
+        }
+      });
+    }
+
+    // ============================================================================
+    // VALIDATION
+    // ============================================================================
+
+    function validateJSONRealtime() {
+      const jsonText = document.getElementById('jsonInput').value.trim();
+      const validationStatus = document.getElementById('validationStatus');
+      const validationText = document.getElementById('validationText');
+      const validationErrors = document.getElementById('validationErrors');
+      const generateBtn = document.getElementById('generateBtn');
+
+      // Reset
+      validationErrors.innerHTML = '';
+      validationErrors.classList.remove('show');
+
+      if (!jsonText) {
+        validationStatus.className = 'validation-status';
+        generateBtn.disabled = true;
+        return;
+      }
+
+      try {
+        const data = JSON.parse(jsonText);
+        const result = validateData(data);
+
+        if (result.errors.length === 0) {
+          validationStatus.className = 'validation-status valid';
+          if (result.warnings.length > 0) {
+            validationText.textContent = `✓ JSON valide (${result.warnings.length} avertissement(s))`;
+            displayValidationErrors(result.warnings);
+          } else {
+            validationText.textContent = '✓ JSON valide';
+          }
+          generateBtn.disabled = false;
+        } else {
+          validationStatus.className = 'validation-status invalid';
+          validationText.textContent = `✗ ${result.errors.length} erreur(s) détectée(s)`;
+          generateBtn.disabled = true;
+          displayValidationErrors([...result.errors, ...result.warnings]);
+        }
+      } catch (e) {
+        validationStatus.className = 'validation-status invalid';
+        validationText.textContent = '✗ JSON invalide';
+        generateBtn.disabled = true;
+        displayValidationErrors([{ message: 'Format JSON invalide: ' + e.message, type: 'error' }]);
+      }
+    }
+
+    function validateData(data) {
+      const errors = [];
+      const warnings = [];
+
+      // Validate metadata
+      if (!data.metadata) {
+        errors.push({ message: 'metadata manquant', type: 'error' });
+      } else {
+        if (!data.metadata.title || typeof data.metadata.title !== 'string') {
+          errors.push({ message: 'metadata.title est requis et doit être une chaîne', type: 'error' });
+        }
+        if (data.metadata.title && data.metadata.title.length > 100) {
+          errors.push({ message: 'metadata.title ne doit pas dépasser 100 caractères', type: 'error' });
+        }
+        if (!data.metadata.fileName || typeof data.metadata.fileName !== 'string') {
+          errors.push({ message: 'metadata.fileName est requis et doit être une chaîne', type: 'error' });
+        }
+      }
+
+      // Validate slides
+      if (!data.slides || !Array.isArray(data.slides) || data.slides.length === 0) {
+        errors.push({ message: 'slides est requis et doit contenir au moins une slide', type: 'error' });
+      } else {
+        // Check slide count
+        if (data.metadata?.expectedSlideCount) {
+          const expected = Number(data.metadata.expectedSlideCount);
+          if (!isNaN(expected) && data.slides.length !== expected) {
+            errors.push({ message: `Nombre de slides incorrect: ${data.slides.length} au lieu de ${expected} attendues`, type: 'error' });
+          }
+        }
+
+        // Validate each slide
+        data.slides.forEach((slide, index) => {
+          const slideNum = index + 1;
+          
+          if (!slide.type || !SLIDE_TYPES.includes(slide.type)) {
+            errors.push({ message: `Slide ${slideNum}: type invalide ou manquant. Types acceptés: ${SLIDE_TYPES.join(', ')}`, type: 'error' });
+          }
+
+          if (!slide.title || typeof slide.title !== 'string') {
+            errors.push({ message: `Slide ${slideNum}: title manquant ou invalide`, type: 'error' });
+          }
+
+          if (slide.title && slide.title.length > 60) {
+            errors.push({ message: `Slide ${slideNum}: title trop long (max 60 caractères)`, type: 'error' });
+          }
+
+          // Warning for long titles
+          if (slide.title && slide.title.length > 50) {
+            warnings.push({ message: `⚠ Slide ${slideNum}: titre long (${slide.title.length} car.) - risque de débordement`, type: 'warning' });
+          }
+
+          // Type-specific validation
+          switch (slide.type) {
+            case 'content':
+              if (!slide.bullets || !Array.isArray(slide.bullets) || slide.bullets.length === 0) {
+                errors.push({ message: `Slide ${slideNum}: bullets manquants ou vides`, type: 'error' });
+              } else {
+                // Warning for too many bullets
+                if (slide.bullets.length > 4) {
+                  warnings.push({ message: `⚠ Slide ${slideNum}: ${slide.bullets.length} puces (max recommandé: 4) - seules les 4 premières seront affichées`, type: 'warning' });
+                }
+                // Warning for long bullets
+                slide.bullets.forEach((bullet, bIdx) => {
+                  const wordCount = String(bullet).split(/\s+/).length;
+                  if (wordCount > 12) {
+                    warnings.push({ message: `⚠ Slide ${slideNum}, puce ${bIdx + 1}: ${wordCount} mots (max recommandé: 12) - risque de débordement`, type: 'warning' });
+                  }
+                });
+              }
+              break;
+            
+            case 'twoColumn':
+              if (!slide.leftContent || !Array.isArray(slide.leftContent)) {
+                errors.push({ message: `Slide ${slideNum}: leftContent manquant ou invalide`, type: 'error' });
+              } else if (slide.leftContent.length > 4) {
+                warnings.push({ message: `⚠ Slide ${slideNum}: colonne gauche avec ${slide.leftContent.length} éléments (max recommandé: 4)`, type: 'warning' });
+              }
+              if (!slide.rightContent || !Array.isArray(slide.rightContent)) {
+                errors.push({ message: `Slide ${slideNum}: rightContent manquant ou invalide`, type: 'error' });
+              } else if (slide.rightContent.length > 4) {
+                warnings.push({ message: `⚠ Slide ${slideNum}: colonne droite avec ${slide.rightContent.length} éléments (max recommandé: 4)`, type: 'warning' });
+              }
+              break;
+            
+            case 'table':
+              if (!slide.tableData || !Array.isArray(slide.tableData) || slide.tableData.length < 2) {
+                errors.push({ message: `Slide ${slideNum}: tableData doit contenir au moins 2 lignes`, type: 'error' });
+              } else {
+                const numCols = slide.tableData[0]?.length || 0;
+                const numRows = slide.tableData.length;
+                
+                // Warning for large tables
+                if (numCols > 5) {
+                  warnings.push({ message: `⚠ Slide ${slideNum}: tableau avec ${numCols} colonnes (max recommandé: 5) - risque de débordement`, type: 'warning' });
+                }
+                if (numRows > 8) {
+                  warnings.push({ message: `⚠ Slide ${slideNum}: tableau avec ${numRows} lignes (max recommandé: 8) - risque de débordement`, type: 'warning' });
+                }
+                
+                // Warning for long cell content
+                slide.tableData.forEach((row, rIdx) => {
+                  row.forEach((cell, cIdx) => {
+                    const cellText = String(cell || '');
+                    if (cellText.length > 30) {
+                      warnings.push({ message: `⚠ Slide ${slideNum}: cellule [${rIdx},${cIdx}] longue (${cellText.length} car.) - risque de débordement`, type: 'warning' });
+                    }
+                  });
+                });
+              }
+              break;
+            
+            case 'chart':
+              if (!slide.chartType || !CHART_TYPES.includes(slide.chartType)) {
+                errors.push({ message: `Slide ${slideNum}: chartType invalide. Types acceptés: ${CHART_TYPES.join(', ')}`, type: 'error' });
+              }
+              if (!slide.data || !Array.isArray(slide.data) || slide.data.length === 0) {
+                errors.push({ message: `Slide ${slideNum}: data manquant pour le graphique`, type: 'error' });
+              }
+              break;
+          }
+        });
+      }
+
+      return { errors, warnings };
+    }
+
+    function displayValidationErrors(messages) {
+      const validationErrors = document.getElementById('validationErrors');
+      
+      if (messages.length === 0) {
+        validationErrors.classList.remove('show');
+        return;
+      }
+
+      validationErrors.innerHTML = messages.map(msg => {
+        const icon = msg.type === 'warning' ? '⚠' : '❌';
+        const cssClass = msg.type === 'warning' ? 'validation-warning-item' : 'validation-error-item';
+        return `
+          <div class="${cssClass}">
+            <span class="validation-error-icon">${icon}</span>
+            <span>${sanitizeHTML(msg.message)}</span>
+          </div>
+        `;
+      }).join('');
+      
+      validationErrors.classList.add('show');
+    }
+
+    // ============================================================================
+    // SANITIZATION
+    // ============================================================================
+
+    function sanitizeHTML(str) {
+      const div = document.createElement('div');
+      div.textContent = str;
+      return div.innerHTML;
+    }
+
+    // ============================================================================
+    // STORAGE MANAGEMENT
+    // ============================================================================
+
+    function saveJSON() {
+      const jsonText = document.getElementById('jsonInput').value.trim();
+      if (jsonText) {
+        try {
+          localStorage.setItem(CONFIG.STORAGE_KEYS.CURRENT_JSON, jsonText);
+        } catch (e) {
+          console.error('Erreur de sauvegarde:', e);
+        }
+      }
+    }
+
+    function loadSavedJSON() {
+      try {
+        const saved = localStorage.getItem(CONFIG.STORAGE_KEYS.CURRENT_JSON);
+        if (saved) {
+          document.getElementById('jsonInput').value = saved;
+          validateJSONRealtime();
+          showToast('info', 'ℹ️ JSON précédent restauré');
+        }
+      } catch (e) {
+        console.error('Erreur de chargement:', e);
+      }
+    }
+
+    function saveToHistory(data) {
+      try {
+        const history = JSON.parse(localStorage.getItem(CONFIG.STORAGE_KEYS.HISTORY) || '[]');
+        
+        const entry = {
+          id: Date.now(),
+          timestamp: new Date().toISOString(),
+          title: data.metadata.title,
+          fileName: data.metadata.fileName,
+          slideCount: data.slides.length,
+          data: data
+        };
+
+        history.unshift(entry);
+        
+        // Limiter à MAX_HISTORY_ITEMS
+        if (history.length > CONFIG.MAX_HISTORY_ITEMS) {
+          history.pop();
+        }
+
+        localStorage.setItem(CONFIG.STORAGE_KEYS.HISTORY, JSON.stringify(history));
+      } catch (e) {
+        console.error('Erreur sauvegarde historique:', e);
+      }
+    }
+
+    function loadHistory() {
+      try {
+        return JSON.parse(localStorage.getItem(CONFIG.STORAGE_KEYS.HISTORY) || '[]');
+      } catch (e) {
+        console.error('Erreur chargement historique:', e);
+        return [];
+      }
+    }
+
+    function deleteFromHistory(id) {
+      try {
+        const history = loadHistory();
+        const filtered = history.filter(item => item.id !== id);
+        localStorage.setItem(CONFIG.STORAGE_KEYS.HISTORY, JSON.stringify(filtered));
+        displayHistory();
+        showToast('success', '✓ Élément supprimé');
+      } catch (e) {
+        console.error('Erreur suppression:', e);
+        showToast('error', '❌ Erreur de suppression');
+      }
+    }
+
+    // ============================================================================
+    // UI FUNCTIONS
+    // ============================================================================
+
+    function copyPrompt() {
+      const text = document.getElementById('prompt').textContent;
+      
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(() => {
+          showToast('success', '✓ Prompt copié dans le presse-papiers');
+        }).catch((err) => {
+          fallbackCopy(text);
+        });
+      } else {
+        fallbackCopy(text);
+      }
+    }
+
+    function fallbackCopy(text) {
+      const textarea = document.createElement('textarea');
+      textarea.value = text;
+      textarea.style.position = 'fixed';
+      textarea.style.opacity = '0';
+      document.body.appendChild(textarea);
+      textarea.select();
+      
+      try {
+        document.execCommand('copy');
+        showToast('success', '✓ Prompt copié dans le presse-papiers');
+      } catch (err) {
+        showToast('error', '❌ Impossible de copier');
+      }
+      
+      document.body.removeChild(textarea);
+    }
+
+    function clearJSON() {
+      if (confirm('Êtes-vous sûr de vouloir effacer le contenu ?')) {
+        document.getElementById('jsonInput').value = '';
+        validateJSONRealtime();
+        saveJSON();
+        showToast('info', 'ℹ️ Contenu effacé');
+      }
+    }
+
+    function exportJSON() {
+      const jsonText = document.getElementById('jsonInput').value.trim();
+      
+      if (!jsonText) {
+        showToast('warning', '⚠️ Aucun JSON à exporter');
+        return;
+      }
+
+      try {
+        const data = JSON.parse(jsonText);
+        const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `${data.metadata.fileName.replace('.pptx', '')}.json` || 'presentation.json';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        showToast('success', '✓ JSON exporté avec succès');
+      } catch (e) {
+        showToast('error', '❌ JSON invalide, impossible d\'exporter');
+      }
+    }
+
+    function importJSON() {
+      document.getElementById('fileInput').click();
+    }
+
+    function handleFileImport(event) {
+      const file = event.target.files[0];
+      
+      if (!file) return;
+
+      if (!file.name.endsWith('.json')) {
+        showToast('error', '❌ Fichier doit être au format JSON');
+        return;
+      }
+
+      const reader = new FileReader();
+      
+      reader.onload = (e) => {
+        try {
+          const content = e.target.result;
+          JSON.parse(content); // Validate
+          document.getElementById('jsonInput').value = content;
+          validateJSONRealtime();
+          saveJSON();
+          showToast('success', '✓ JSON importé avec succès');
+        } catch (err) {
+          showToast('error', '❌ Fichier JSON invalide');
+        }
+      };
+
+      reader.onerror = () => {
+        showToast('error', '❌ Erreur de lecture du fichier');
+      };
+
+      reader.readAsText(file);
+      
+      // Reset input
+      event.target.value = '';
+    }
+
+    function showToast(type, message) {
+      const toast = document.getElementById('toast');
+      toast.className = `toast ${type}`;
+      toast.textContent = message;
+      toast.style.display = 'block';
+      
+      setTimeout(() => {
+        toast.style.animation = 'slideOut 0.3s ease';
+        setTimeout(() => {
+          toast.style.display = 'none';
+          toast.style.animation = '';
+        }, 300);
+      }, 4000);
+    }
+
+    // ============================================================================
+    // TEMPLATES MANAGEMENT
+    // ============================================================================
+
+    function populateTemplates() {
+      const templateGrid = document.getElementById('templateGrid');
+      
+      Object.keys(TEMPLATES).forEach(key => {
+        const template = TEMPLATES[key];
+        const card = document.createElement('div');
+        card.className = 'template-card';
+        card.innerHTML = `
+          <h3>${sanitizeHTML(template.name)}</h3>
+          <p>${sanitizeHTML(template.description)}</p>
+        `;
+        card.onclick = () => loadTemplate(key);
+        card.onkeypress = (e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            loadTemplate(key);
+          }
+        };
+        card.setAttribute('tabindex', '0');
+        card.setAttribute('role', 'button');
+        templateGrid.appendChild(card);
+      });
+    }
+
+    function loadTemplate(templateKey) {
+      const template = TEMPLATES[templateKey];
+      if (!template) return;
+
+      document.getElementById('jsonInput').value = JSON.stringify(template.data, null, 2);
+      validateJSONRealtime();
+      saveJSON();
+      closeTemplatesModal();
+      showToast('success', `✓ Template "${template.name}" chargé`);
+    }
+
+    function openTemplatesModal() {
+      document.getElementById('templatesModal').classList.add('show');
+    }
+
+    function closeTemplatesModal() {
+      document.getElementById('templatesModal').classList.remove('show');
+    }
+
+    // ============================================================================
+    // HISTORY MANAGEMENT
+    // ============================================================================
+
+    function openHistoryModal() {
+      displayHistory();
+      document.getElementById('historyModal').classList.add('show');
+    }
+
+    function closeHistoryModal() {
+      document.getElementById('historyModal').classList.remove('show');
+    }
+
+    function displayHistory() {
+      const history = loadHistory();
+      const historyList = document.getElementById('historyList');
+
+      if (history.length === 0) {
+        historyList.innerHTML = '<p style="text-align: center; color: var(--text-light); padding: 40px;">Aucun historique disponible</p>';
+        return;
+      }
+
+      historyList.innerHTML = history.map(item => {
+        const date = new Date(item.timestamp).toLocaleString('fr-FR', {
+          day: '2-digit',
+          month: '2-digit',
+          year: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit'
+        });
+
+        return `
+          <div class="history-item">
+            <div class="history-info">
+              <h4>${sanitizeHTML(item.title)}</h4>
+              <p>${date} · ${item.slideCount} slides</p>
+            </div>
+            <div class="history-actions">
+              <button class="btn btn-primary" onclick="loadFromHistory(${item.id})" aria-label="Charger cet historique">
+                📂 Charger
+              </button>
+              <button class="btn" onclick="deleteFromHistory(${item.id})" aria-label="Supprimer cet historique">
+                🗑️
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function loadFromHistory(id) {
+      const history = loadHistory();
+      const item = history.find(h => h.id === id);
+      
+      if (!item) {
+        showToast('error', '❌ Élément introuvable');
+        return;
+      }
+
+      document.getElementById('jsonInput').value = JSON.stringify(item.data, null, 2);
+      validateJSONRealtime();
+      saveJSON();
+      closeHistoryModal();
+      showToast('success', '✓ Historique chargé');
+    }
+
+    // ============================================================================
+    // POWERPOINT GENERATION
+    // ============================================================================
+
+    async function generate() {
+      try {
+        // Vérification de la bibliothèque
+        if (typeof PptxGenJS === 'undefined') {
+          throw new Error('La bibliothèque PptxGenJS n\'est pas chargée. Assurez-vous que le fichier pptxgen.bundle.js est dans le même dossier.');
+        }
+
+        // Récupération du JSON
+        const jsonText = document.getElementById('jsonInput').value.trim();
+        if (!jsonText) {
+          throw new Error('Veuillez coller le JSON généré par l\'IA dans le champ de droite');
+        }
+
+        // Parsing du JSON
+        let data;
+        try {
+          data = JSON.parse(jsonText);
+        } catch (e) {
+          throw new Error('JSON invalide. Vérifiez le format et réessayez.');
+        }
+        
+        // Validation complète
+        const result = validateData(data);
+        if (result.errors.length > 0) {
+          throw new Error(`Validation échouée: ${result.errors[0].message}`);
+        }
+
+        // Disable button during generation
+        const generateBtn = document.getElementById('generateBtn');
+        const originalContent = generateBtn.innerHTML;
+        generateBtn.disabled = true;
+        generateBtn.innerHTML = '<span class="spinner"></span> <span>Génération...</span>';
+
+        // Création de la présentation
+        const pptx = new PptxGenJS();
+        pptx.layout = 'LAYOUT_16x9';
+        pptx.author = data.metadata.author || 'PowerPoint Generator Pro';
+        pptx.title = data.metadata.title;
+        pptx.subject = data.metadata.subject || '';
+        pptx.company = data.metadata.company || 'Improved Edition';
+
+        // Définir le master slide
+        pptx.defineSlideMaster({
+          title: 'MASTER_SLIDE',
+          background: { fill: 'FFFFFF' },
+          margin: [0.5, 0.5, 0.5, 0.5],
+          slideNumber: { x: 9, y: 5.3, fontSize: 10, color: '999999' }
+        });
+
+        // Génération des slides
+        for (let i = 0; i < data.slides.length; i++) {
+          const slide = data.slides[i];
+          const pptSlide = pptx.addSlide({ masterName: 'MASTER_SLIDE' });
+          
+          switch (slide.type) {
+            case 'title':
+              pptSlide.background = { fill: 'F8FAFC' };
+              pptSlide.addText(slide.title || '', {
+                x: 0.5, y: 2.2, w: 9, h: 1.5,
+                fontSize: 44, bold: true, align: 'center',
+                color: '1A202C', fontFace: 'Arial'
+              });
+              if (slide.subtitle) {
+                pptSlide.addText(slide.subtitle, {
+                  x: 0.5, y: 3.8, w: 9, h: 1,
+                  fontSize: 24, align: 'center',
+                  color: '64748B', fontFace: 'Arial'
+                });
+              }
+              pptSlide.addShape(pptx.ShapeType.line, {
+                x: 3.5, y: 3.5, w: 2.5, h: 0,
+                line: { color: '3182CE', width: 2 }
+              });
+              break;
+
+            case 'content':
+              pptSlide.addText(slide.title || '', {
+                x: 0.5, y: 0.5, w: 9, h: 0.8,
+                fontSize: 32, bold: true, color: '2C5282',
+                fontFace: 'Arial'
+              });
+              pptSlide.addShape(pptx.ShapeType.line, {
+                x: 0.5, y: 1.3, w: 9, h: 0,
+                line: { color: 'E2E8F0', width: 1 }
+              });
+              if (slide.bullets && slide.bullets.length > 0) {
+                // Limit to 4 bullets maximum to prevent overflow
+                const limitedBullets = slide.bullets.slice(0, 4);
+                
+                // Calculate average bullet length for adaptive font sizing
+                const avgLength = limitedBullets.reduce((sum, b) => sum + String(b).length, 0) / limitedBullets.length;
+                const fontSize = avgLength > 100 ? 14 : avgLength > 80 ? 16 : 18;
+                
+                const bullets = limitedBullets.map(b => ({
+                  text: String(b),
+                  options: { 
+                    bullet: { type: 'bullet', color: '3182CE' },
+                    fontSize: fontSize,
+                    color: '334155',
+                    paraSpaceBefore: 6,
+                    paraSpaceAfter: 6,
+                    breakLine: true
+                  }
+                }));
+                pptSlide.addText(bullets, {
+                  x: 0.8, y: 1.8, w: 8.4, h: 4.5,
+                  fontFace: 'Arial',
+                  lineSpacing: 32
+                });
+              }
+              break;
+
+            case 'twoColumn':
+              pptSlide.addText(slide.title || '', {
+                x: 0.5, y: 0.5, w: 9, h: 0.8,
+                fontSize: 32, bold: true, color: '2C5282',
+                fontFace: 'Arial'
+              });
+              pptSlide.addShape(pptx.ShapeType.line, {
+                x: 0.5, y: 1.3, w: 9, h: 0,
+                line: { color: 'E2E8F0', width: 1 }
+              });
+              if (slide.leftContent && slide.leftContent.length > 0) {
+                // Limit to 4 bullets maximum to prevent overflow
+                const limitedLeftContent = slide.leftContent.slice(0, 4);
+                
+                // Calculate average length for adaptive font sizing
+                const avgLengthLeft = limitedLeftContent.reduce((sum, b) => sum + String(b).length, 0) / limitedLeftContent.length;
+                const fontSizeLeft = avgLengthLeft > 70 ? 13 : avgLengthLeft > 50 ? 14 : 16;
+                
+                const leftBullets = limitedLeftContent.map(b => ({
+                  text: String(b),
+                  options: { 
+                    bullet: { type: 'bullet', color: '3182CE' },
+                    fontSize: fontSizeLeft,
+                    color: '334155',
+                    paraSpaceBefore: 4,
+                    paraSpaceAfter: 4,
+                    breakLine: true
+                  }
+                }));
+                pptSlide.addText(leftBullets, {
+                  x: 0.5, y: 1.8, w: 4.2, h: 4.5,
+                  fontFace: 'Arial'
+                });
+              }
+              if (slide.rightContent && slide.rightContent.length > 0) {
+                // Limit to 4 bullets maximum to prevent overflow
+                const limitedRightContent = slide.rightContent.slice(0, 4);
+                
+                // Calculate average length for adaptive font sizing
+                const avgLengthRight = limitedRightContent.reduce((sum, b) => sum + String(b).length, 0) / limitedRightContent.length;
+                const fontSizeRight = avgLengthRight > 70 ? 13 : avgLengthRight > 50 ? 14 : 16;
+                
+                const rightBullets = limitedRightContent.map(b => ({
+                  text: String(b),
+                  options: { 
+                    bullet: { type: 'bullet', color: '3182CE' },
+                    fontSize: fontSizeRight,
+                    color: '334155',
+                    paraSpaceBefore: 4,
+                    paraSpaceAfter: 4,
+                    breakLine: true
+                  }
+                }));
+                pptSlide.addText(rightBullets, {
+                  x: 5.3, y: 1.8, w: 4.2, h: 4.5,
+                  fontFace: 'Arial'
+                });
+              }
+              break;
+
+            case 'table':
+              pptSlide.addText(slide.title || '', {
+                x: 0.5, y: 0.5, w: 9, h: 0.8,
+                fontSize: 32, bold: true, color: '2C5282',
+                fontFace: 'Arial'
+              });
+              if (slide.tableData && slide.tableData.length > 0) {
+                // Adaptive dimensions based on content
+                const numCols = slide.tableData[0]?.length || 1;
+                const numRows = slide.tableData.length;
+                
+                // Calculate adaptive table width (max 9 inches, min 3 inches)
+                const tableWidth = Math.min(9, Math.max(3, numCols * 1.8));
+                const colWidth = tableWidth / numCols;
+                const tableX = (10 - tableWidth) / 2; // Center horizontally
+                
+                // Calculate adaptive table height (max 4.8 inches)
+                const rowHeight = Math.min(0.6, 4.8 / numRows);
+                const tableHeight = Math.min(4.8, numRows * rowHeight);
+                
+                // Function to adjust font size based on text length
+                const adjustFontSize = (text, isHeader) => {
+                  const textLength = String(text || '').length;
+                  if (isHeader) {
+                    if (textLength > 20) return 11;
+                    if (textLength > 15) return 12;
+                    return 13;
+                  } else {
+                    if (textLength > 40) return 9;
+                    if (textLength > 30) return 10;
+                    if (textLength > 20) return 11;
+                    return 12;
+                  }
+                };
+                
+                const tableData = slide.tableData.map((row, idx) => 
+                  row.map(cell => {
+                    const cellText = String(cell || '');
+                    const fontSize = adjustFontSize(cellText, idx === 0);
+                    
+                    return {
+                      text: cellText,
+                      options: idx === 0 ? {
+                        bold: true,
+                        color: 'FFFFFF',
+                        fill: { color: '2C5282' },
+                        fontSize: fontSize,
+                        align: 'center',
+                        valign: 'middle',
+                        wrap: true
+                      } : {
+                        fontSize: fontSize,
+                        color: '334155',
+                        align: 'center',
+                        valign: 'middle',
+                        fill: idx % 2 === 0 ? { color: 'F8FAFC' } : { color: 'FFFFFF' },
+                        wrap: true
+                      }
+                    };
+                  })
+                );
+                
+                pptSlide.addTable(tableData, {
+                  x: tableX, 
+                  y: 1.5, 
+                  w: tableWidth, 
+                  h: tableHeight,
+                  border: { pt: 0.5, color: 'E2E8F0' },
+                  fontFace: 'Arial',
+                  colW: Array(numCols).fill(colWidth),
+                  rowH: Array(numRows).fill(rowHeight)
+                });
+              }
+              break;
+
+            case 'chart':
+              pptSlide.addText(slide.title || '', {
+                x: 0.5, y: 0.5, w: 9, h: 0.8,
+                fontSize: 32, bold: true, color: '2C5282',
+                fontFace: 'Arial'
+              });
+              if (slide.data && slide.data.length > 0) {
+                const labels = slide.data.map(d => String(d.label));
+                const values = slide.data.map(d => Number(d.value) || 0);
+                const chartData = [{
+                  name: slide.title || 'Données',
+                  labels: labels,
+                  values: values
+                }];
+                
+                const chartType = slide.chartType === 'line' ? pptx.ChartType.line :
+                                 slide.chartType === 'pie' ? pptx.ChartType.pie :
+                                 pptx.ChartType.bar;
+                
+                const chartColors = ['2C5282', '3182CE', '60A5FA', '93C5FD', 'BFDBFE'];
+                
+                pptSlide.addChart(chartType, chartData, {
+                  x: 0.5, y: 1.5, w: 9, h: 4.5,
+                  chartColors: chartColors,
+                  showLegend: true,
+                  legendPos: 'b',
+                  showTitle: false,
+                  showValue: true,
+                  dataLabelColor: '334155',
+                  dataLabelFontSize: 11
+                });
+              }
+              break;
+
+            case 'image':
+              pptSlide.addText(slide.title || '', {
+                x: 0.5, y: 0.5, w: 9, h: 0.8,
+                fontSize: 32, bold: true, color: '2C5282',
+                fontFace: 'Arial'
+              });
+              if (slide.imagePath && slide.imagePath.startsWith('IMAGE_PLACEHOLDER')) {
+                const desc = slide.imagePath.replace('IMAGE_PLACEHOLDER_', '').replace(/-/g, ' ');
+                pptSlide.addShape(pptx.ShapeType.rect, {
+                  x: 0.5, y: 1.5, w: 9, h: 4.5,
+                  fill: { color: 'F8FAFC' },
+                  line: { color: 'CBD5E1', width: 2, dashType: 'dash' }
+                });
+                pptSlide.addText(`[ ${desc} ]`, {
+                  x: 0.5, y: 3, w: 9, h: 1.5,
+                  fontSize: 16, color: '94A3B8',
+                  align: 'center', valign: 'middle',
+                  fontFace: 'Arial', italic: true
+                });
+              }
+              break;
+
+            default:
+              pptSlide.addText('Type de slide non reconnu: ' + slide.type, {
+                x: 0.5, y: 2.5, w: 9, h: 2,
+                fontSize: 18, color: 'EF4444',
+                align: 'center'
+              });
+          }
+        }
+
+        // Nom du fichier
+        const fileName = data.metadata.fileName || `presentation-${Date.now()}.pptx`;
+        
+        // Génération et téléchargement du fichier
+        await pptx.writeFile({ fileName });
+        
+        // Save to history
+        saveToHistory(data);
+        
+        // Restore button
+        generateBtn.disabled = false;
+        generateBtn.innerHTML = originalContent;
+        
+        showToast('success', `✓ ${fileName} généré avec succès !`);
+        
+      } catch (error) {
+        console.error('Erreur:', error);
+        showToast('error', `❌ Erreur: ${error.message}`);
+        
+        // Restore button
+        const generateBtn = document.getElementById('generateBtn');
+        generateBtn.disabled = false;
+        generateBtn.innerHTML = originalContent || '<span class="btn-icon">▶</span><span>Générer PowerPoint</span>';
+      }
+    }
+  </script>
+</body>
+</html>
