@@ -1,0 +1,25 @@
+{
+  "metadata": {
+    "title": "Plan marketing",
+    "fileName": "plan-marketing.pptx",
+    "expectedSlideCount": 2
+  },
+  "slides": [
+    {
+      "type": "title",
+      "title": "Plan marketing"
+    },
+    {
+      "type": "content",
+      "title": "Campagnes prévues",
+      "bullets": [
+        "Lancement social media",
+        "Campagne emailing",
+        "Webinaire thématique",
+        "Publicité display",
+        "Partenariats influenceurs",
+        "Promotion en point de vente"
+      ]
+    }
+  ]
+}

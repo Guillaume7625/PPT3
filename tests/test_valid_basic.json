@@ -1,0 +1,24 @@
+{
+  "metadata": {
+    "title": "Stratégie 2025",
+    "fileName": "strategie-2025.pptx",
+    "author": "Equipe Conseil",
+    "expectedSlideCount": 2
+  },
+  "slides": [
+    {
+      "type": "title",
+      "title": "Stratégie 2025",
+      "subtitle": "Feuille de route"
+    },
+    {
+      "type": "content",
+      "title": "Axes prioritaires",
+      "bullets": [
+        "Développer les offres premium",
+        "Renforcer la présence digitale",
+        "Accélérer les partenariats"
+      ]
+    }
+  ]
+}
