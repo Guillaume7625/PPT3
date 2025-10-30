@@ -1,0 +1,28 @@
+{
+  "metadata": {
+    "title": "Analyse chiffrée",
+    "fileName": "analyse-chiffree.pptx",
+    "expectedSlideCount": 2
+  },
+  "slides": [
+    {
+      "type": "title",
+      "title": "Analyse chiffrée"
+    },
+    {
+      "type": "table",
+      "title": "Volumes trimestriels",
+      "tableData": [
+        ["T", "Produit A", "Produit B", "Produit C", "Produit D", "Produit E"],
+        ["Q1", "120", "140", "160", "110", "90"],
+        ["Q2", "130", "150", "170", "115", "95"],
+        ["Q3", "135", "158", "175", "118", "97"],
+        ["Q4", "140", "162", "182", "120", "100"],
+        ["Q5", "145", "168", "188", "122", "104"],
+        ["Q6", "150", "172", "192", "125", "107"],
+        ["Q7", "155", "176", "196", "128", "110"],
+        ["Q8", "160", "180", "200", "130", "112"]
+      ]
+    }
+  ]
+}
