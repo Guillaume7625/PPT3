@@ -2,22 +2,20 @@
 <html lang="fr">
 <head>
   <!--
-    PowerPoint Generator Pro - v3.0
+    PowerPoint Generator Pro - v2.1
     
-    Nouveautés v3.0:
-    1. ✅ Interface repensée avec prompt template visible
-    2. ✅ Workflow simplifié: Copier prompt → Coller dans IA → Coller résultat → Générer
-    3. ✅ Prompt optimisé pour toutes les IA (ChatGPT, Claude, Gemini, etc.)
-    4. ✅ Système d'avertissements intelligent (warnings non-bloquants)
-    5. ✅ Dimensions adaptatives pour tous les contenus
-    6. ✅ Limitation automatique à 4 bullets par slide
-    7. ✅ Ajustement automatique des tailles de police
-    8. ✅ Text wrapping et gestion débordement optimisée
+    Corrections v2.1:
+    1. ✅ Système d'avertissements pour contenu long (titres >50 car, bullets >12 mots, tables >5 cols/8 rows)
+    2. ✅ Dimensions adaptatives pour tables (largeur et hauteur calculées selon contenu)
+    3. ✅ Ajustement automatique de la taille de police selon longueur du texte
+    4. ✅ Limitation automatique à 4 bullets maximum par slide (évite débordement)
+    5. ✅ Wrapping activé pour cellules de tableau
+    6. ✅ Hauteur et largeur de colonnes/rangées calculées dynamiquement
     
-    Version Game Changer:
-    - Prompt universel compatible avec toutes les IA
-    - Interface intuitive en 3 étapes claires
-    - Génération optimale garantie
+    Ces corrections résolvent les problèmes:
+    - Contenu sortant du cadre des slides
+    - Tables avec trop de colonnes/rangées
+    - Texte trop long dans les cellules
   -->
   
   <!-- Content Security Policy pour sécurité maximale -->
@@ -27,7 +25,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Générateur de présentations PowerPoint professionnel avec IA">
-  <title>PowerPoint Generator Pro - v3.0</title>
+  <title>PowerPoint Generator Pro - v2.1</title>
   
   <!-- Chargement LOCAL de PptxGenJS -->
   <script src="./pptxgen.bundle.js"></script>
@@ -839,7 +837,7 @@
       <div class="logo-icon" role="img" aria-label="PowerPoint Generator Pro Logo">PP</div>
       <h1>PowerPoint Generator Pro</h1>
     </div>
-    <div class="subtitle">Solution professionnelle v3.0 - Workflow IA Simplifié & Optimisé</div>
+    <div class="subtitle">Solution professionnelle améliorée de génération de présentations - v2.1 (Anti-débordement)</div>
     <div class="security-badge">
       <span role="img" aria-label="Lock">🔒</span>
       <span>100% Offline & Sécurisé</span>
@@ -903,173 +901,107 @@
             class="prompt-content" 
             id="prompt"
             role="region"
-            aria-label="Prompt template pour l'IA">🎯 MISSION : Tu es un expert en création de présentations PowerPoint professionnelles.
-Génère UNIQUEMENT un JSON valide, sans texte avant/après, sans markdown, sans commentaires.
+            aria-label="Prompt template pour l'IA">Tu es un générateur de contenu pour présentations PowerPoint professionnelles.
+Tu dois produire UNIQUEMENT un objet JSON valide, sans texte avant/après, sans balises markdown, sans commentaires.
 
 ════════════════════════════════════════════════════════════════════════════════
-📝 CONTEXTE (À PERSONNALISER)
+CONTEXTE À DÉFINIR
 ════════════════════════════════════════════════════════════════════════════════
 
-SUJET : [Décrivez le sujet de votre présentation]
-NOMBRE_SLIDES : [nombre exact ou AUTO pour automatique]
-STYLE : [professionnel | créatif | académique | commercial]
-PUBLIC_CIBLE : [Qui va voir cette présentation ?]
-OBJECTIF : [Que voulez-vous transmettre ?]
+SUJET : [votre sujet]
+NOMBRE_SLIDES : [nombre ou AUTO]
+STYLE : [professionnel|créatif|académique|commercial]
 
 ════════════════════════════════════════════════════════════════════════════════
-⚡ RÈGLES CRITIQUES (Ne JAMAIS dépasser ces limites!)
+RÈGLES ABSOLUES
 ════════════════════════════════════════════════════════════════════════════════
 
-JSON STRICT :
-✅ UTF-8, guillemets doubles uniquement
-✅ Échapper guillemets internes avec \"
-✅ PAS de virgules finales
-✅ PAS de commentaires dans le JSON
-✅ Nombres dans tableaux = CHAÎNES ("45%", "2.5M€", "150 clients")
-✅ Nombres dans graphiques = NOMBRES PURS (45, 2.5, 150)
+✅ JSON STRICT :
+• UTF-8, guillemets doubles uniquement
+• Échapper guillemets internes avec \"
+• Pas de virgules finales, pas de commentaires
+• Nombres dans tableaux = chaînes ("45%", "2.5M€")
+• Nombres dans graphiques = nombres purs (45, 2.5)
 
-CONTRAINTES DE CONTENU (TRÈS IMPORTANT!) :
-✅ Titres : MAX 50 caractères (idéal: 30-40)
-✅ Bullets : MAX 4 par slide, MAX 12 mots par bullet
-✅ Tables : MAX 5 colonnes × 8 lignes
-✅ Cellules tableau : MAX 30 caractères par cellule
-✅ Première slide = TOUJOURS type "title"
-✅ Dernière slide = type "content" avec conclusion/contact
-
-TYPES DE CHARTTYPE DISPONIBLES :
-• "bar" pour graphique en barres
-• "line" pour graphique en ligne
-• "pie" pour camembert
+✅ CONTRAINTES :
+• Titres : max 60 caractères
+• Bullets : 3-5 par slide, max 15 mots
+• Tables : max 4 colonnes × 10 lignes
+• Première slide = type "title"
+• Dernière slide = type "content" avec call-to-action
 
 ════════════════════════════════════════════════════════════════════════════════
-📊 STRUCTURE JSON COMPLÈTE
+STRUCTURE JSON
 ════════════════════════════════════════════════════════════════════════════════
 
 {
   "metadata": {
-    "title": "Titre Présentation",
+    "title": "Titre de la présentation",
     "fileName": "nom-fichier.pptx",
-    "author": "Nom Auteur",
-    "expectedSlideCount": 8
+    "author": "Auteur",
+    "expectedSlideCount": 10
   },
   "slides": [
     {
       "type": "title",
-      "title": "Titre Principal (max 50 car)",
-      "subtitle": "Sous-titre optionnel"
+      "title": "Titre principal",
+      "subtitle": "Sous-titre"
     },
     {
       "type": "content", 
-      "title": "Titre Slide (max 50 car)",
+      "title": "Titre de slide",
       "bullets": [
-        "Premier point clé (max 12 mots)",
-        "Deuxième point important",
-        "Troisième point essentiel",
-        "Quatrième point (MAX 4 bullets!)"
+        "Point 1 (max 15 mots)",
+        "Point 2",
+        "Point 3"
       ]
     },
     {
       "type": "twoColumn",
-      "title": "Comparaison ou Liste Double",
-      "leftContent": [
-        "Point gauche 1",
-        "Point gauche 2",
-        "Point gauche 3"
-      ],
-      "rightContent": [
-        "Point droit 1",
-        "Point droit 2",
-        "Point droit 3"
-      ]
+      "title": "Titre",
+      "leftContent": ["Point 1", "Point 2"],
+      "rightContent": ["Point 1", "Point 2"]
     },
     {
       "type": "table",
-      "title": "Titre Tableau",
+      "title": "Titre",
       "tableData": [
         ["En-tête 1", "En-tête 2", "En-tête 3"],
-        ["Courte donnée", "45%", "2.5M€"],
-        ["Autre donnée", "52%", "3.1M€"]
+        ["Donnée", "45%", "2.5M€"]
       ]
     },
     {
       "type": "chart",
-      "title": "Titre Graphique",
+      "title": "Titre",
       "chartType": "bar",
       "data": [
-        { "label": "Q1 2024", "value": 45 },
-        { "label": "Q2 2024", "value": 62 },
-        { "label": "Q3 2024", "value": 78 },
-        { "label": "Q4 2024", "value": 85 }
+        { "label": "Q1", "value": 45 },
+        { "label": "Q2", "value": 52 },
+        { "label": "Q3", "value": 48 }
       ]
     },
     {
       "type": "image",
-      "title": "Titre Image",
-      "imagePath": "IMAGE_PLACEHOLDER_description-de-image"
+      "title": "Titre",
+      "imagePath": "IMAGE_PLACEHOLDER_description"
     }
   ]
 }
 
 ════════════════════════════════════════════════════════════════════════════════
-📚 TYPES DE SLIDES DISPONIBLES
+TYPES DISPONIBLES
 ════════════════════════════════════════════════════════════════════════════════
 
-1. TYPE "title" : Slide de titre/couverture
-   - Obligatoire : title
-   - Optionnel : subtitle
-
-2. TYPE "content" : Slide avec bullets
-   - Obligatoire : title, bullets (array)
-   - Max 4 bullets, max 12 mots par bullet
-
-3. TYPE "twoColumn" : Deux colonnes de bullets
-   - Obligatoire : title, leftContent (array), rightContent (array)
-   - Max 4 items par colonne
-
-4. TYPE "table" : Tableau de données
-   - Obligatoire : title, tableData (array 2D)
-   - Max 5 colonnes × 8 lignes
-   - Première ligne = en-têtes
-   - Cellules max 30 caractères
-
-5. TYPE "chart" : Graphique
-   - Obligatoire : title, chartType ("bar"|"line"|"pie"), data (array d'objets)
-   - data format: [{ "label": "texte", "value": nombre }]
-
-6. TYPE "image" : Image placeholder
-   - Obligatoire : title, imagePath
-   - imagePath format: "IMAGE_PLACEHOLDER_description"
-
-════════════════════════════════════════════════════════════════════════════════
-💡 CONSEILS DE BONNE PRATIQUE
-════════════════════════════════════════════════════════════════════════════════
-
-• Commencez TOUJOURS par une slide "title"
-• Alternez les types de slides pour dynamisme
-• Utilisez "twoColumn" pour comparaisons
-• Utilisez "table" pour données structurées (pas trop de lignes!)
-• Utilisez "chart" pour visualiser tendances/évolution
-• Terminez par une slide "content" avec conclusion + contact
-• Soyez CONCIS : moins de texte = plus d'impact
-• Utilisez des chiffres et données concrètes quand possible
-
-════════════════════════════════════════════════════════════════════════════════
-⚠️ ERREURS FRÉQUENTES À ÉVITER
-════════════════════════════════════════════════════════════════════════════════
-
-❌ Titres trop longs (>50 caractères) → Débordement garanti!
-❌ Plus de 4 bullets par slide → Surcharge visuelle!
-❌ Bullets trop longs (>12 mots) → Illisible!
-❌ Tables avec >5 colonnes → Ne rentre pas dans slide!
-❌ Cellules de tableau trop longues → Texte coupé!
-❌ Virgules finales dans JSON → JSON invalide!
-❌ Commentaires dans JSON → JSON invalide!
-❌ Texte avant/après le JSON → Génération échouée!
+• title : Slide d'ouverture
+• content : Contenu avec bullets  
+• twoColumn : Deux colonnes
+• table : Tableau de données
+• chart : Graphique (bar, line, pie)
+• image : Image ou placeholder
 
 ════════════════════════════════════════════════════════════════════════════════
 
-MAINTENANT, GÉNÈRE LE JSON POUR LE SUJET DÉFINI CI-DESSUS.
-RAPPEL : UNIQUEMENT LE JSON, RIEN D'AUTRE!</div>
+GÉNÈRE UNIQUEMENT LE JSON, SANS TEXTE AVANT/APRÈS.</div>
         </div>
       </div>
 
@@ -1126,38 +1058,32 @@ Exemple:
 
     <!-- Instructions -->
     <div class="instructions">
-      <div class="instructions-title">🚀 Mode d'emploi - 3 étapes simples</div>
+      <div class="instructions-title">Mode d'emploi</div>
       <div class="instructions-grid">
         <div class="instruction-item">
           <div class="instruction-number" aria-hidden="true">1</div>
           <div class="instruction-text">
-            <strong>Copier le prompt</strong> : Cliquez sur "📋 Copier le prompt" dans le panel gauche
+            Copiez le prompt template et collez-le dans votre IA (ChatGPT, Claude, etc.)
           </div>
         </div>
         <div class="instruction-item">
           <div class="instruction-number" aria-hidden="true">2</div>
           <div class="instruction-text">
-            <strong>Aller dans votre IA</strong> : Collez dans ChatGPT, Claude, Gemini, etc. Personnalisez le SUJET, STYLE et OBJECTIF
+            Personnalisez le contexte (sujet, nombre de slides, style) dans le prompt
           </div>
         </div>
         <div class="instruction-item">
           <div class="instruction-number" aria-hidden="true">3</div>
           <div class="instruction-text">
-            <strong>Coller le résultat</strong> : Copiez uniquement le JSON généré par l'IA et collez-le dans le panel de droite
+            Copiez le JSON généré par l'IA et collez-le dans le panel de droite
           </div>
         </div>
         <div class="instruction-item">
           <div class="instruction-number" aria-hidden="true">4</div>
           <div class="instruction-text">
-            <strong>Générer</strong> : Cliquez sur "▶ Générer PowerPoint" et téléchargez votre présentation!
+            La validation en temps réel vous indiquera les erreurs éventuelles
           </div>
         </div>
-      </div>
-      <div style="margin-top: 20px; padding: 15px; background: #fef3c7; border-radius: 8px; border: 1px solid #f59e0b;">
-        <strong style="color: #92400e;">💡 Astuce Pro:</strong>
-        <span style="color: #92400e; font-size: 14px;">
-          Le prompt contient TOUTES les règles pour un résultat parfait. Personnalisez uniquement le CONTEXTE au début, le reste est optimisé!
-        </span>
       </div>
     </div>
   </div>

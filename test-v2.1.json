@@ -1,0 +1,66 @@
+{
+  "metadata": {
+    "title": "Test Version 2.1 - Validation des corrections",
+    "fileName": "test-v2.1.pptx",
+    "author": "PowerPoint Generator Pro v2.1",
+    "subject": "Test des dimensions adaptatives et avertissements",
+    "expectedSlideCount": 6
+  },
+  "slides": [
+    {
+      "type": "title",
+      "title": "PowerPoint Generator Pro v2.1",
+      "subtitle": "Tests de validation des corrections de débordement"
+    },
+    {
+      "type": "content",
+      "title": "Test 1: Limitation à 4 bullets (devrait afficher avertissement)",
+      "bullets": [
+        "Premier point - devrait être affiché",
+        "Deuxième point - devrait être affiché",
+        "Troisième point - devrait être affiché",
+        "Quatrième point - devrait être affiché",
+        "Cinquième point - NE DEVRAIT PAS être affiché (limité à 4)",
+        "Sixième point - NE DEVRAIT PAS être affiché (limité à 4)"
+      ]
+    },
+    {
+      "type": "content",
+      "title": "Titre très très très long qui dépasse les 50 caractères recommandés pour tester les avertissements",
+      "bullets": [
+        "Cette bullet contient un texte vraiment très long avec beaucoup beaucoup de mots qui dépassent largement les 12 mots recommandés",
+        "Point court",
+        "Encore un point avec un texte assez long mais toujours dans la limite des 12 mots maximum recommandés",
+        "Dernier point"
+      ]
+    },
+    {
+      "type": "table",
+      "title": "Test 2: Tableau avec 3 colonnes (dimensions adaptatives)",
+      "tableData": [
+        ["Colonne 1", "Colonne 2", "Colonne 3"],
+        ["Donnée courte", "Donnée moyenne longueur", "Donnée"],
+        ["A1", "B1", "C1"],
+        ["A2", "B2", "C2"]
+      ]
+    },
+    {
+      "type": "table",
+      "title": "Test 3: Tableau large avec 7 colonnes (devrait afficher avertissement)",
+      "tableData": [
+        ["Col1", "Col2", "Col3", "Col4", "Col5", "Col6", "Col7"],
+        ["D1", "D2", "D3", "D4", "D5", "D6", "D7"],
+        ["A", "B", "C", "D", "E", "F", "G"]
+      ]
+    },
+    {
+      "type": "table",
+      "title": "Test 4: Cellules longues (ajustement police + wrapping)",
+      "tableData": [
+        ["En-tête court", "En-tête assez long pour tester", "En-tête très très très long qui dépasse 20 caractères"],
+        ["Cellule", "Cellule avec texte de longueur moyenne pour tester", "Cellule avec un texte vraiment très très long qui dépasse largement les 40 caractères recommandés pour tester l'ajustement automatique de la taille de police"],
+        ["OK", "Test", "Validation"]
+      ]
+    }
+  ]
+}
